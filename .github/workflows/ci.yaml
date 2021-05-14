@@ -8,7 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Hello world action step
+        uses: ./docker-compose.yaml
       - name: Build images
-        uses: ./
         run: |
           make start
