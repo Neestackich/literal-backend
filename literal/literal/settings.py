@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 
-DEBUG = os.environ.get("DEBUG")
+DEBUG = os.environ.get("DJANGO_DEBUG")
 
 
 ALLOWED_HOSTS = ["127.0.0.1", "0.0.0.0", "localhost"]
@@ -24,7 +24,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "apps.authentication",
     "apps.mailer",
-    "apps.scanner",
+    "apps.order",
 ]
 
 
@@ -112,6 +112,34 @@ USE_TZ = True
 
 STATIC_URL = "/staticfiles/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+MEDIA_URL = "/mediafiles/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s  %(asctime)s  %(module)s "
+            "%(process)d  %(thread)d  %(message)s"
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        }
+    },
+    "loggers": {
+        "apps": {"level": "INFO", "handlers": ["console"], "propagate": False},
+        "django.db.backends": {
+            "level": "ERROR",
+            "handlers": ["console"],
+            "propagate": False,
+        },
+    },
+}
