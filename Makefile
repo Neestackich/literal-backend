@@ -1,9 +1,3 @@
-set_console_env:
-	chmod +x ./scripts/create_console_dev_env.py
-	./scripts/create_console_dev_env.py
-	. ./variables/console_dev.env
-	export $(cut -d= -f1 ./variables/console_dev.env)
-
 migrations:
 	docker-compose  run --rm --entrypoint "./manage.py makemigrations" app
 
@@ -14,9 +8,15 @@ static:
 	docker-compose  run --rm --entrypoint "./manage.py collectstatic --no-input" app
 
 build:
-	docker stop literal_postres || docker rm literal_postres || echo "Deleted postres"
-	docker stop literal_app || docker rm literal_app || docker rmi literal -f || echo "Deleted app"
-	docker stop literal_nginx || docker rm literal_nginx || echo "Deleted nginx"
+	docker stop literal_celery && docker rm literal_celery || echo "Deleted celery"
+	docker stop literal_redis && docker rm literal_redis || echo "Deleted redis"
+	docker stop literal_postres && docker rm literal_postres || echo "Deleted postres"
+	docker stop literal_app && docker rm literal_app && docker rmi literal -f || echo "Deleted literal"
+	docker stop literal_nginx && docker rm literal_nginx || echo "Deleted nginx"
+	docker rmi literal -f || echo "Deleted literal image"
+	docker rmi literal_celery_image -f || echo "Deleted celery image"
+	docker rmi literal_nginx_image -f || echo "Deleted nginx image"
+
 	docker-compose -f docker-compose.yaml up --build -d
 
 start:
@@ -53,11 +53,8 @@ prepare-commit:
 	make pylint
 	make mypy
 
-literal-shell:
+shell:
 	docker exec -it literal_app bash
-
-literal-postgres-shell:
-	docker exec -it literal_postgres bash
 
 logs:
 	docker-compose logs -f --tail 100
@@ -66,9 +63,13 @@ logs-app:
 	docker-compose logs -f --tail 100 app
 
 build-prod:
-	docker stop literal_postres || docker rm literal_postres || echo "Deleted postres"
-	docker stop literal_app || docker rm literal_app || docker rmi literal -f || echo "Deleted app"
-	docker stop literal_nginx || docker rm literal_nginx || echo "Deleted nginx"
+	docker stop literal_celery && docker rm literal_celery || echo "Deleted celery"
+	docker stop literal_redis && docker rm literal_redis || echo "Deleted redis"
+	docker stop literal_postres && docker rm literal_postres || echo "Deleted postres"
+	docker stop literal_app && docker rm literal_app && docker rmi literal -f || echo "Deleted literal"
+	docker stop literal_nginx && docker rm literal_nginx || echo "Deleted nginx"
+	docker rmi literal -f || echo "Deleted literal image"
+	docker rmi celery_image -f || echo "Deleted celery image"
 	docker-compose -f docker-compose.prod.yaml up --build -d
 
 start-prod:
@@ -76,3 +77,9 @@ start-prod:
 	make migrations
 	make migrate
 	make static
+
+containers:
+	docker ps -a
+
+images:
+	docker images

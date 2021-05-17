@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "apps.authentication",
     "apps.mailer",
     "apps.order",
+    "apps.scanner",
 ]
 
 
@@ -117,6 +118,22 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND")
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS")
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = os.environ.get("EMAIL_PORT")
+
+
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND")
+CELERY_ACCEPT_CONTENT = [os.environ.get("CELERY_ACCEPT_CONTENT")]
+CELERY_TASK_SERIALIZER = os.environ.get("CELERY_TASK_SERIALIZER")
+CELERY_RESULT_SERIALIZER = os.environ.get("CELERY_RESULT_SERIALIZER")
+
 
 LOGGING = {
     "version": 1,
