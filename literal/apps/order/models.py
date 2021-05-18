@@ -24,5 +24,7 @@ class Order(models.Model):
     status = models.CharField(max_length=30, choices=CHOICES, default=ACTIVE)
     text = models.TextField(null=True)
 
+    extension = models.CharField(max_length=10, null=True)
+
     def __str__(self) -> str:
         return f"{self.userprofile.user.username} - {self.date} - {self.image.name}"
