@@ -2,9 +2,8 @@ version: "3.5"
 
 services:
   app:
-    image: "literal"
+    image: neestackich/literal
     container_name: "literal_app"
-    build: literal
     command: python manage.py runserver 0.0.0.0:8000
     depends_on:
       - postgres
