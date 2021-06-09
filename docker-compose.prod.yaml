@@ -4,7 +4,11 @@ services:
   app:
     image: neestackich/literal
     container_name: "literal_app"
-    command: python manage.py runserver 0.0.0.0:8000
+    command: bash -c "
+      ./manage.py makemigrations &&
+      ./manage.py migrate &&
+      ./manage.py collectstatic  --no-input &&
+      gunicorn --workers=4 literal.wsgi -b :8000"
     depends_on:
       - postgres
       - celery
@@ -56,9 +60,8 @@ services:
       - 6379
 
   celery:
-    image: "literal_celery_image"
+    image: neestackich/literal
     container_name: "literal_celery"
-    build: literal
     command: celery -A literal worker -l info
     volumes:
       - celery_volume/:/usr/src/app/
