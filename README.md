@@ -5,7 +5,7 @@ This service recieves photos from iOS app(https://github.com/Neestackich/literal
 
 ## Launch the project
 
-1. Enter the root directory
+1. Enter the root directory and type:
    ```bash
     make start
     ```
